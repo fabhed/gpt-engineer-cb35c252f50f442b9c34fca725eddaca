@@ -1,0 +1,72 @@
+To create a website that shows the current weather in Stockholm, we will use Python with the Flask web framework and the OpenWeatherMap API to fetch the weather data. We will also use the requests library to make API calls.
+
+First, let's create a `requirements.txt` file to list the dependencies:
+
+requirements.txt
+```txt
+Flask==2.1.1
+requests==2.26.0
+```
+
+Now, let's create the main application file `app.py`:
+
+app.py
+```python
+from flask import Flask, render_template
+import requests
+
+app = Flask(__name__)
+
+def get_weather_data():
+    """Fetches the current weather data for Stockholm from the OpenWeatherMap API."""
+    api_key = "your_openweathermap_api_key"
+    url = f"http://api.openweathermap.org/data/2.5/weather?q=Stockholm,SE&appid={api_key}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+@app.route('/')
+def index():
+    """Renders the main page with the current weather in Stockholm."""
+    weather_data = get_weather_data()
+    current_temperature = weather_data['main']['temp']
+    return render_template('index.html', temperature=current_temperature)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
+```
+
+Replace `your_openweathermap_api_key` with your actual API key from OpenWeatherMap.
+
+Next, let's create the `templates` folder and the `index.html` file inside it:
+
+templates/index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stockholm Weather</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 48px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    {{ temperature }}°C
+</body>
+</html>
+```
+
+Now, let's set up the project:
+
+1. Install the dependencies: `pip install -r requirements.txt`
+2. Run the application: `python app.py`
+
+The website should now be running on `http://0.0.0.0:8000/` and display the current temperature in Stockholm.
